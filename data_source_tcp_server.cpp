@@ -20,8 +20,16 @@ struct sockaddr_in serv_addr, cli_addr;
 sockfd = socket(AF_INET, SOCK_STREAM, 0);
 if (sockfd >= 0)
 	{
-	int flag = 1;
+	int flag;
+
+	flag = 1;
 	if( setsockopt(sockfd,IPPROTO_TCP,TCP_NODELAY,(char *) &flag,sizeof(int) )< 0 )
+		{
+		printf("Unable to set TCP_NODELAY\n");
+		}
+
+	flag = 1;
+	if( setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,(char *) &flag,sizeof(int) )< 0 )
 		{
 		printf("Unable to set TCP_NODELAY\n");
 		}
