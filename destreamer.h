@@ -1,0 +1,58 @@
+#include <fcntl.h>
+#include <sys/stat.h>
+
+typedef struct
+	{
+	unsigned char * buffer;
+	int size;
+
+	int last_pos;
+	int cur_pos;
+	}destreamer;
+
+static destreamer ds;
+static void open_264( const char * fname )
+{
+struct stat statbuf;
+int fd;
+if( stat(fname, &statbuf) < 0 )
+	{
+	printf("Failed to open %s\n",fname);
+	return;
+	}
+fd = open( fname, O_RDONLY );
+ds.buffer = malloc( statbuf.st_size );
+read( fd, ds.buffer, statbuf.st_size );
+ds.size = statbuf.st_size;
+printf("opened %s, size=%i\n",fname,ds.size);
+close( fd );
+ds.cur_pos=0;
+ds.last_pos=0;
+}
+
+static int get_next_block( )
+{
+uint32_t keyword;
+ds.last_pos = ds.cur_pos;
+ds.cur_pos+=4;
+for( ; ds.cur_pos < ds.size - 3; ++ds.cur_pos )
+	{
+	memcpy( &keyword, &ds.buffer[ds.cur_pos],4);
+	if( ds.buffer[ds.cur_pos+0]==0 &&
+	    ds.buffer[ds.cur_pos+1]==0 &&
+	    ds.buffer[ds.cur_pos+2]==0 &&
+	    ds.buffer[ds.cur_pos+3]==1 )
+		{
+		printf("Found @ %i\n",ds.cur_pos);
+		return 1;
+		}
+	}
+printf("dnf\n");
+return 0;
+}
+
+static void close_264( void )
+{
+free( ds.buffer );
+ds.buffer = NULL;
+}
