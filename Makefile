@@ -6,25 +6,42 @@ FLAGS += `pkg-config --cflags --libs libswscale`
 FLAGS += `pkg-config --cflags --libs libv4l2`
 FLAGS += -g
 
-all: capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source
+all: .depend capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source
 
-capture: capture.cpp config.h
-	g++ $< -o $@ $(FLAGS)
+SOURCES=\
+	avcodec_sample.0.5.0.c\
+	capture.cpp\
+	x264_encode.c\
+	libavcexample.c\
+	v4l2_enumerate.cpp\
+	test_data_source.cpp\
+	packet_server.cpp\
+	data_source_stdio.cpp\
+	data_source_stdio_info.cpp
 
-x264_encode: x264_encode.c config.h
-	gcc $< -o $@ $(FLAGS)
+.depend:
+	fastdep $(SOURCES) > .depend
 
-avcodec: avcodec_sample.0.5.0.c destreamer.h config.h
-	gcc $< -o $@ $(FLAGS)
+-include .depend
 
-libavcexample: libavcexample.c config.h
-	gcc $< -o $@ $(FLAGS)
 
-v4l2_enumerate: v4l2_enumerate.cpp
-	g++ $< -o $@ $(FLAGS)
+capture: capture.o
+	g++ $? -o $@ $(FLAGS)
+
+x264_encode: x264_encode.o
+	gcc $? -o $@ $(FLAGS)
+
+avcodec: avcodec_sample.0.5.0.o 
+	gcc $? -o $@ $(FLAGS)
+
+libavcexample: libavcexample.o
+	gcc $? -o $@ $(FLAGS)
+
+v4l2_enumerate: v4l2_enumerate.o
+	g++ $? -o $@ $(FLAGS)
+
+test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o
+	g++ $? -o $@ $(FLAGS)
 
 clean:
-	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate
-
-test_data_source: test_data_source.cpp
-	g++ $< -o $@ $(FLAGS) packet_server.cpp data_source_stdio.cpp data_source_stdio_info.cpp
+	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend
