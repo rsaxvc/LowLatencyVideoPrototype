@@ -5,7 +5,8 @@ FLAGS += `pkg-config --cflags --libs libavcodec`
 FLAGS += `pkg-config --cflags --libs libswscale`
 FLAGS += `pkg-config --cflags --libs libv4l2`
 
-all: capture x264_encode avcodec libavcexample v4l2_enumerate
+all: capture x264_encode avcodec libavcexample v4l2_enumerate encoder
+
 capture: capture.cpp
 	g++ capture.cpp -o capture
 
@@ -21,5 +22,8 @@ libavcexample: libavcexample.c
 v4l2_enumerate: v4l2_enumerate.cpp
 	g++ v4l2_enumerate.cpp -o v4l2_enumerate -Wall $(FLAGS)
 
+encoder: encoder.cpp
+	g++ -Wall encoder.cpp -o encoder $(FLAGS)
+
 clean:
-	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate
+	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate encoder
