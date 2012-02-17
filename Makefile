@@ -4,8 +4,10 @@ FLAGS += `pkg-config --cflags --libs libavformat`
 FLAGS += `pkg-config --cflags --libs libavcodec`
 FLAGS += `pkg-config --cflags --libs libswscale`
 FLAGS += `pkg-config --cflags --libs libv4l2`
+FLAGS += -g
 
-all: capture x264_encode avcodec libavcexample v4l2_enumerate
+all: capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source
+
 capture: capture.cpp config.h
 	g++ $< -o $@ $(FLAGS)
 
@@ -23,3 +25,6 @@ v4l2_enumerate: v4l2_enumerate.cpp
 
 clean:
 	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate
+
+test_data_source: test_data_source.cpp
+	g++ $< -o $@ $(FLAGS) packet_server.cpp data_source_stdio.cpp data_source_stdio_info.cpp

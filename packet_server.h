@@ -8,6 +8,7 @@ typedef void (*packet_server_callback)(void*userdata,const uint8_t*data,size_t b
 
 class packet_server
 	{
+	public:
 	void broadcast( const uint8_t*data, size_t bytes);
 	void register_callback( packet_server_callback, void * userdata );
 	size_t num_targets();
