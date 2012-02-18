@@ -13,10 +13,10 @@ packet_server server;
 server.broadcast(nothing,sizeof(nothing));
 
 data_source_stdio stdio_src;
-server.register_callback(stdio_src.write,&stdio_src);
+server.register_callback(&stdio_src);
 server.broadcast(test1,sizeof(test1));
 
 data_source_stdio_info stdio_info;
-server.register_callback(stdio_info.write,&stdio_info);
+server.register_callback(&stdio_info);
 server.broadcast(test2,sizeof(test2));
 }

@@ -4,24 +4,18 @@
 #include <list>
 #include <stdint.h>
 
-typedef void (*packet_server_callback)(void*userdata,const uint8_t*data,size_t bytes);
+#include "data_source.h"
 
 class packet_server
 	{
 	public:
-	void broadcast( const uint8_t*data, size_t bytes);
-	void register_callback( packet_server_callback, void * userdata );
+	void broadcast( const uint8_t * data, size_t bytes);
+	void register_callback( data_source * target );
 	size_t num_targets();
 
 	private:
-	struct target
-		{
-		packet_server_callback func;
-		void *                 data;
-		};
 
-
-	std::list<target> targets;
+	std::list<data_source*> targets;
 	};
 
 #endif

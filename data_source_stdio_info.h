@@ -8,8 +8,8 @@
 
 class data_source_stdio_info: public data_source
 	{
-    public:
-    static void write( void * data_source_ptr, const uint8_t * data, size_t bytes );
+	public:
+	void write( const uint8_t * data, size_t bytes );
 	};
 
 #endif
