@@ -57,10 +57,10 @@ for( i = 0; i < NUM_FRAMES; ++i )
 	//data is a pointer to you RGB structure
 	//sws_scale(convertCtx, &data, &srcstride, 0, h, pic_in.img.plane, pic_in.img.stride);
 	int frame_size = x264_encoder_encode(encoder, &nals, &i_nals, &pic_in, &pic_out);
-	if (frame_size >= 0)
+	for( i_nals_iter = 0; i_nals_iter < i_nals; i_nals_iter++ )
 		{
 		//printf("%i\t%i\t%i\t%i\t%i\tsz:%i\n",nals->i_ref_idc,nals->i_type,nals->b_long_startcode,nals->i_first_mb,nals->i_last_mb,nals->i_payload);
-		write( fd, nals->p_payload, nals->i_payload );
+		write( fd, nals[i_nals_iter].p_payload, nals[i_nals_iter].i_payload );
 		}
 	}
 
