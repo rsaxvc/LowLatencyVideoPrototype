@@ -7,7 +7,7 @@ FLAGS += `pkg-config --cflags --libs libv4l2`
 FLAGS += `pkg-config --cflags --libs opencv`
 FLAGS += -g
 
-all: .depend\
+ALL_BUILDS = \
 	capture\
 	x264_encode\
 	avcodec\
@@ -16,6 +16,8 @@ all: .depend\
 	v4l2_enumerate\
 	test_data_source\
 	test_data_source_ocv
+
+all: .depend $(ALL_BUILDS)
 
 SOURCES=`ls *.cpp *.c`
 
@@ -49,4 +51,4 @@ test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_i
 	g++ $? -o $@ $(FLAGS)
 
 clean:
-	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend *.o avcodec_rsa test_data_source_ocv
+	rm -f *.o $(ALL_BUILDS)
