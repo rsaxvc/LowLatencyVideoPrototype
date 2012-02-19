@@ -14,7 +14,8 @@ all: .depend\
 	avcodec_rsa\
 	libavcexample\
 	v4l2_enumerate\
-	test_data_source
+	test_data_source\
+	test_data_source_ocv
 
 SOURCES=`ls *.cpp *.c`
 
@@ -44,5 +45,8 @@ v4l2_enumerate: v4l2_enumerate.o
 test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o
 	g++ $? -o $@ $(FLAGS)
 
+test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
+	g++ $? -o $@ $(FLAGS)
+
 clean:
-	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend *.o avcodec_rsa
+	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend *.o avcodec_rsa test_data_source_ocv

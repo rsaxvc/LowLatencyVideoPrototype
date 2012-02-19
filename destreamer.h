@@ -21,7 +21,7 @@ if( stat(fname, &statbuf) < 0 )
 	return;
 	}
 fd = open( fname, O_RDONLY );
-ds.buffer = malloc( statbuf.st_size );
+ds.buffer = (uint8_t*)malloc( statbuf.st_size );
 read( fd, ds.buffer, statbuf.st_size );
 ds.size = statbuf.st_size;
 printf("opened %s, size=%i\n",fname,ds.size);
@@ -42,17 +42,15 @@ for( ; ds.cur_pos < ds.size - 3; ++ds.cur_pos )
 	    ds.buffer[ds.cur_pos+2]==0 &&
 	    ds.buffer[ds.cur_pos+3]==1 )
 		{
-		printf("Found @ %i\n",ds.cur_pos);
 		return 1;
 		}
 	}
-printf("dnf\n");
+printf("end of stream\n");
 return 0;
 }
 
 static void close_264( void )
 {
-printf("close_264 called\n");
 free( ds.buffer );
 ds.buffer = NULL;
 }
