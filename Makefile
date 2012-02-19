@@ -54,4 +54,4 @@ test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_so
 	g++ $? -o $@ $(FLAGS)
 
 clean:
-	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend avcodec_rsa
+	rm -f capture x264_encode avcodec libavcexample v4l2_enumerate test_data_source .depend *.o avcodec_rsa
