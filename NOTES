@@ -1,0 +1,10 @@
+We tried:
+	Ethernet, Wifi+AP, Wifi+AdHoc
+combined with:
+	TCP,UDP provided by NetCat.
+
+Ethernet+anything worked well
+Wifi+AP+TCP worked, but had long lags
+Wifi+AP+UDP worked better, but with packet loss
+Wifi+AdHoc+TCP worked well, but had lags
+Wifi+AdHoc+UDP worked well, packet loss at longer-ranges
