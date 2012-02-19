@@ -30,14 +30,13 @@ ds.cur_pos=0;
 ds.last_pos=0;
 }
 
-static int get_next_block( )
+static int get_next_block( void )
 {
-uint32_t keyword;
 ds.last_pos = ds.cur_pos;
-ds.cur_pos+=4;
+ds.cur_pos+=1;
 for( ; ds.cur_pos < ds.size - 3; ++ds.cur_pos )
 	{
-	memcpy( &keyword, &ds.buffer[ds.cur_pos],4);
+	//printf("cur_pos:%i, buffer:%08x\n",ds.cur_pos,ds.buffer);
 	if( ds.buffer[ds.cur_pos+0]==0 &&
 	    ds.buffer[ds.cur_pos+1]==0 &&
 	    ds.buffer[ds.cur_pos+2]==0 &&
@@ -53,6 +52,7 @@ return 0;
 
 static void close_264( void )
 {
+printf("close_264 called\n");
 free( ds.buffer );
 ds.buffer = NULL;
 }
