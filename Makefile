@@ -4,6 +4,7 @@ FLAGS += `pkg-config --cflags --libs libavformat`
 FLAGS += `pkg-config --cflags --libs libavcodec`
 FLAGS += `pkg-config --cflags --libs libswscale`
 FLAGS += `pkg-config --cflags --libs libv4l2`
+FLAGS += `pkg-config --cflags --libs opencv`
 FLAGS += -g
 
 all: .depend\
@@ -15,17 +16,7 @@ all: .depend\
 	v4l2_enumerate\
 	test_data_source
 
-SOURCES=\
-	avcodec_sample.0.5.0.c\
-	avcodec_rsa.c\
-	capture.cpp\
-	x264_encode.c\
-	libavcexample.c\
-	v4l2_enumerate.cpp\
-	test_data_source.cpp\
-	packet_server.cpp\
-	data_source_stdio.cpp\
-	data_source_stdio_info.cpp
+SOURCES=`ls *.cpp *.c`
 
 .depend:
 	fastdep $(SOURCES) > .depend
