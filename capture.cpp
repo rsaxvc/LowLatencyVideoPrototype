@@ -28,8 +28,8 @@
 
 #include <x264.h>
 
-#define WIDTH 640
-#define HEIGHT 480
+#include "config.h"
+
 #define CLEAR(x) memset (&(x), 0, sizeof (x))
 
 typedef enum {
@@ -627,7 +627,7 @@ main                            (int                    argc,
         for (;;) {
                 int index;
                 int c;
-                
+
                 c = getopt_long (argc, argv,
                                  short_options, long_options,
                                  &index);
