@@ -1,3 +1,4 @@
+#include "v4l2device.hpp"
 
 extern "C" {
 #include <libswscale/swscale.h>
@@ -17,8 +18,8 @@ int main( int argc, char** argv )
     unsigned int inputWidth = 640;
     unsigned int inputHeight = 480;
     
-    unsigned int outputWidth = 320;
-    unsigned int outputHeight = 240;
+    unsigned int outputWidth = 160;
+    unsigned int outputHeight = 120;
 
     // Initialize encoder
     x264_param_t param;
@@ -26,7 +27,7 @@ int main( int argc, char** argv )
 
     param.i_width   = outputWidth;
     param.i_height  = outputHeight;
-    param.i_fps_num = 60;
+    param.i_fps_num = 30;
 
     // Settings as explained by http://x264dev.multimedia.cx/archives/249
 
@@ -89,11 +90,11 @@ int main( int argc, char** argv )
         ( 
         inputWidth, 
         inputHeight, 
-        PIX_FMT_RGB24, 
+        PIX_FMT_YUYV422, 
         outputWidth, 
         outputHeight, 
         PIX_FMT_YUV420P, 
-        SWS_POINT, 
+        SWS_BILINEAR, 
         NULL, 
         NULL, 
         NULL 
@@ -106,23 +107,21 @@ int main( int argc, char** argv )
     
     ofstream ofile( "dump.h264", ios::binary );
 
-        // input frame (rgb)
-        vector< unsigned char > iframe( inputWidth * inputHeight * 3 );
-        for( size_t i = 0; i < iframe.size(); ++i )
-        {
-            iframe[i] = rand()%255;
-        }
+    cout << "opening video0" << endl;
+    capture::readwrite dev;
+    dev.open("/dev/video0", true);
+    dev.set_image_format(V4L2_PIX_FMT_YUYV);
+    dev.set_image_extents(640, 480);
+    dev.set_buffer_queue_length(8);
+    dev.configure();
+    //usleep(100000);
 
+    unsigned int frames = 0;
     while( true )
     {
-        static int fc = 0;
-        cout << "frame: " << fc << endl;
-        fc++;
-        if( fc == 600 )
-            break;        
-
-        cout << "making random frame" << endl;
-
+        cout << "frame: " << frames << endl;
+        frames++;
+        
         /*
         { 
         stringstream ss;
@@ -137,19 +136,27 @@ int main( int argc, char** argv )
         
         cout << "scaling frame down" << endl;
 
+        devicebase::buffer_type const* b = dev.get_next_frame();
+
 	    // Convert to I420, as explained by 
 	    // http://stackoverflow.com/q/2940671/44729
-        uint8_t* ptr = &iframe[0];
+        //uint8_t* ptr = &iframe[0];
+        uint8_t* ptr = reinterpret_cast< unsigned char* >( const_cast< char* >( b->get_buffer() ) );
+
+        // 2x becuase...dunno?  yuyv-related
+        int stride = inputWidth * 2;
         sws_scale
             ( 
             swsCtx, 
             &ptr, 
-            (int*)&inputWidth, // stride 
+            (int*)&stride, // stride 
             0, 
             inputHeight, 
             pic_in.img.plane, 
             pic_in.img.i_stride
             );
+
+        dev.recycle_frame(b);
 
         // when to do intra?
         // maybe this is user-triggered
@@ -188,6 +195,9 @@ int main( int argc, char** argv )
         cout << "end of frame" << endl;
         cout << endl;
     }
+
+    dev.release();
+    dev.close();
 
     x264_encoder_close( encoder );
 
