@@ -40,7 +40,6 @@ int fd = open("output.264",O_RDWR|O_CREAT);
 
 x264_encoder_headers(encoder, &nals, &i_nals );
 printf("inals=%i\n",i_nals);
-//printf("%i\t%i\t%i\t%i\t%i\tsz:%i\n",nals->i_ref_idc,nals->i_type,nals->b_long_startcode,nals->i_first_mb,nals->i_last_mb,nals->i_payload);
 for( i_nals_iter = 0; i_nals_iter < i_nals; i_nals_iter++ )
 	{
 	write( fd, nals[i_nals_iter].p_payload, nals[i_nals_iter].i_payload );
@@ -59,7 +58,6 @@ for( i = 0; i < NUM_FRAMES; ++i )
 	int frame_size = x264_encoder_encode(encoder, &nals, &i_nals, &pic_in, &pic_out);
 	for( i_nals_iter = 0; i_nals_iter < i_nals; i_nals_iter++ )
 		{
-		//printf("%i\t%i\t%i\t%i\t%i\tsz:%i\n",nals->i_ref_idc,nals->i_type,nals->b_long_startcode,nals->i_first_mb,nals->i_last_mb,nals->i_payload);
 		write( fd, nals[i_nals_iter].p_payload, nals[i_nals_iter].i_payload );
 		}
 	}
