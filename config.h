@@ -2,3 +2,4 @@
 #define HEIGHT 480
 #define FPS 60
 #define TCP_PORT_NUMBER 10000
+#define UDP_PORT_NUMBER 10000

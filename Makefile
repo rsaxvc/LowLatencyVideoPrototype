@@ -16,6 +16,7 @@ ALL_BUILDS = \
 	v4l2_enumerate\
 	test_data_source\
 	test_data_source_tcp_server\
+	test_data_source_udp\
 	test_data_source_ocv
 
 all: .depend $(ALL_BUILDS)
@@ -49,6 +50,9 @@ test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_so
 	g++ $? -o $@ $(FLAGS)
 
 test_data_source_tcp_server: test_data_source_tcp_server.o packet_server.o data_source_stdio_info.o data_source_tcp_server.o
+	g++ $? -o $@ $(FLAGS)
+
+test_data_source_udp: test_data_source_udp.o packet_server.o data_source_stdio_info.o data_source_udp.o
 	g++ $? -o $@ $(FLAGS)
 
 test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
