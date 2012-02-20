@@ -17,11 +17,11 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-    unsigned int inputWidth = WIDTH;
-    unsigned int inputHeight = HEIGHT;
+    unsigned int inputWidth = 640;
+    unsigned int inputHeight = 480;
 
-    unsigned int outputWidth = 160;
-    unsigned int outputHeight = 120;
+    unsigned int outputWidth = WIDTH;
+    unsigned int outputHeight = HEIGHT;
 
     // Initialize encoder
     x264_param_t param;
