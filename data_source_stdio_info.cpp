@@ -12,5 +12,5 @@ data_source_stdio_info::~data_source_stdio_info()
 
 void data_source_stdio_info::write( const uint8_t * data, size_t bytes )
 {
-fprintf(stdout,"Received packet %i: %i bytes\n", ++num_packets, bytes);
+fprintf(stdout,"packet %i: %i bytes\n", ++num_packets, bytes);
 }
