@@ -40,7 +40,7 @@ avcodec_rsa: avcodec_rsa.o
 v4l2_enumerate: v4l2_enumerate.o
 	g++ $? -o $@ $(FLAGS)
 
-test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o
+test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o data_source_file.o
 	g++ $? -o $@ $(FLAGS)
 
 test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
