@@ -10,13 +10,15 @@ extern "C" {
 #include <iostream>
 #include <sstream>
 
+#include "config.h"
+
 using namespace std;
 
 
 int main( int argc, char** argv )
 {
-    unsigned int inputWidth = 320;
-    unsigned int inputHeight = 240;
+    unsigned int inputWidth = WIDTH;
+    unsigned int inputHeight = HEIGHT;
 
     unsigned int outputWidth = 160;
     unsigned int outputHeight = 120;
