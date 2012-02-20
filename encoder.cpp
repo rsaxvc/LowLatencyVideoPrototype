@@ -15,19 +15,20 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-    unsigned int inputWidth = 640;
-    unsigned int inputHeight = 480;
+    unsigned int inputWidth = 320;
+    unsigned int inputHeight = 240;
     
     unsigned int outputWidth = 160;
     unsigned int outputHeight = 120;
 
     // Initialize encoder
     x264_param_t param;
-    x264_param_default_preset( &param, "medium", "zerolatency" );
+    x264_param_default_preset( &param, "ultrafast", "zerolatency" );
 
     param.i_width   = outputWidth;
     param.i_height  = outputHeight;
     param.i_fps_num = 30;
+    param.i_fps_den = 1;
 
     // Settings as explained by http://x264dev.multimedia.cx/archives/249
 
@@ -40,14 +41,14 @@ int main( int argc, char** argv )
     // Set VBV mode and max bitrate (kbps).
     // VBV is variable bitrate, which means the rate will vary depending 
     // on how complex the scene is at the moment - detail, motion, etc.
-    x264_param_parse( &param, "vbv-maxrate", "500" ); 
+    x264_param_parse( &param, "vbv-maxrate", "100" ); 
 
     // Enable single-frame VBV.
     // This will cap all frames so that they only contain a maximum 
     // amount of information, which in turn means that each frame can
     // always be sent in one packet and packets will be of a much
     // more unform size.
-    x264_param_parse( &param, "vbv-bufsize", "30" );
+    x264_param_parse( &param, "vbv-bufsize", "10" );
 
     // Constant Rate Factor.
     // Tells VBV to target a specific quality.
@@ -105,13 +106,16 @@ int main( int argc, char** argv )
         exit( EXIT_FAILURE );
     }
     
-    ofstream ofile( "dump.h264", ios::binary );
+    //ofstream ofile( "dump.h264", ios::binary );
+    //FILE* ofile = fopen( "dump.h264", "w" );
+    //FILE* ofile = fopen( "dump.h264", "w" );
 
-    cout << "opening video0" << endl;
+
+    //cout << "opening video0" << endl;
     capture::readwrite dev;
     dev.open("/dev/video0", true);
     dev.set_image_format(V4L2_PIX_FMT_YUYV);
-    dev.set_image_extents(640, 480);
+    dev.set_image_extents( inputWidth, inputHeight );
     dev.set_buffer_queue_length(8);
     dev.configure();
     //usleep(100000);
@@ -119,7 +123,7 @@ int main( int argc, char** argv )
     unsigned int frames = 0;
     while( true )
     {
-        cout << "frame: " << frames << endl;
+        //cout << "frame: " << frames << endl;
         frames++;
         
         /*
@@ -134,7 +138,7 @@ int main( int argc, char** argv )
         }
         */
         
-        cout << "scaling frame down" << endl;
+        //cout << "scaling frame down" << endl;
 
         devicebase::buffer_type const* b = dev.get_next_frame();
 
@@ -162,7 +166,7 @@ int main( int argc, char** argv )
         // maybe this is user-triggered
         // x264_encoder_intra_refresh( encoder );
 
-        cout << "encoding frame" << endl;
+        //cout << "encoding frame" << endl;
 
         // Encode frame
         x264_nal_t* nals;
@@ -177,7 +181,7 @@ int main( int argc, char** argv )
             &pic_out 
             );
 
-        cout << "collecting nals into buffer" << endl;
+        //cout << "collecting nals into buffer" << endl;
 
         // dump nals into a buffer    
         vector< unsigned char > buf;
@@ -188,12 +192,14 @@ int main( int argc, char** argv )
             buf.insert( buf.end(), beg, end );
         }
 
-        cout << "dumping buffer to file" << endl;
+        //cout << "dumping buffer to file" << endl;
 
-        ofile.write( (const char*)&buf[0], buf.size() );
+        
+        fwrite( (const char*)&buf[0], 1, buf.size(), stdout ); 
+        //ofile.write( (const char*)&buf[0], buf.size() );
 
-        cout << "end of frame" << endl;
-        cout << endl;
+        //cout << "end of frame" << endl;
+        //cout << endl;
     }
 
     dev.release();
