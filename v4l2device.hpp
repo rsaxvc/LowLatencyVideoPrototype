@@ -615,7 +615,7 @@ protected:
         if (N == 0) return false;
         if (N != LEN)
         {
-            V4L2_ERROR("failed to read " << LEN << " bytes from device.");
+            V4L2_ERROR("failed to read " << LEN << " bytes from device, instead got " << N <<" bytes");
         }
         _M_index = (_M_index + 1) % _M_get_buffer_count();
         return true;
