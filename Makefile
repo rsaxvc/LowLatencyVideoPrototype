@@ -12,6 +12,7 @@ ALL_BUILDS = \
 	x264_encode\
 	avcodec\
 	avcodec_rsa\
+	encoder\
 	v4l2_enumerate\
 	test_data_source\
 	test_data_source_ocv
@@ -35,6 +36,9 @@ avcodec: avcodec_sample.0.5.0.o
 	gcc $? -o $@ $(FLAGS)
 
 avcodec_rsa: avcodec_rsa.o
+	gcc $? -o $@ $(FLAGS)
+
+encoder: encoder.o
 	gcc $? -o $@ $(FLAGS)
 
 v4l2_enumerate: v4l2_enumerate.o
