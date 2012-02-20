@@ -1,79 +1,41 @@
 // avcodec_sample.0.5.0.c
 
-// A small sample program that shows how to use libavformat and libavcodec to
-// read video from a file.
-//
-// This version is for the 0.4.9+ release of ffmpeg. This release adds the
-// av_read_frame() API call, which simplifies the reading of video frames 
-// considerably. 
-//
-// Use
-//
-// gcc -o avcodec_sample.0.5.0 avcodec_sample.0.5.0.c -lavformat -lavcodec -lavutil -lswscale -lz -lbz2
-//
-// to build (assuming libavformat, libavcodec, libavutil, and swscale are correctly installed on
-// your system).
-//
-// Run using
-//
-// avcodec_sample.0.5.0 myvideofile.mpg
-//
-// to write the first five frames from "myvideofile.mpg" to disk in PPM
-// format.
-
 #include <libavcodec/avcodec.h>
-#include <libavformat/avformat.h>
+//RSA#include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "destreamer.h"
+#include "config.h"
+
 static void SaveFrame(AVFrame *pFrame, int width, int height, int iFrame);
 
 int main (int argc, const char * argv[])
 {
-    AVFormatContext *pFormatCtx;
-    int             i, videoStream;
+    int             i;
     AVCodecContext  *pCodecCtx;
     AVCodec         *pCodec;
-    AVFrame         *pFrame; 
+    AVFrame         *pFrame;
     AVFrame         *pFrameRGB;
-    AVPacket        packet;
     int             frameFinished;
-    int             numBytes;
-    uint8_t         *buffer;
-
-    // Register all formats and codecs
-    av_register_all();
+	int 	numBytes;
+	void * buffer;
 
     // Open video file
-    if(av_open_input_file(&pFormatCtx, argv[1], NULL, 0, NULL)!=0)
+open_264( argv[1] );
+if( NULL == ds.buffer )
+		{
+		printf("couldn't open file\n");
         return -1; // Couldn't open file
+		}
 
-    // Retrieve stream information
-    if(av_find_stream_info(pFormatCtx)<0)
-        return -1; // Couldn't find stream information
-
-    // Dump information about file onto standard error
-    dump_format(pFormatCtx, 0, argv[1], false);
-
-    // Find the first video stream
-    videoStream=-1;
-    for(i=0; i<pFormatCtx->nb_streams; i++)
-        if(pFormatCtx->streams[i]->codec->codec_type==CODEC_TYPE_VIDEO)
-        {
-            videoStream=i;
-            break;
-        }
-    if(videoStream==-1)
-        return -1; // Didn't find a video stream
-
-    // Get a pointer to the codec context for the video stream
-    pCodecCtx=pFormatCtx->streams[videoStream]->codec;
+	avcodec_register_all();
 
     // Find the decoder for the video stream
-    pCodec=avcodec_find_decoder(pCodecCtx->codec_id);
+    pCodec=avcodec_find_decoder(CODEC_ID_H264);
     if(pCodec==NULL)
 		{
 		printf("No codec\n");
@@ -81,6 +43,10 @@ int main (int argc, const char * argv[])
 		}
 
     // Open codec
+	pCodecCtx = avcodec_alloc_context();
+	pCodecCtx->pix_fmt=0;
+	pCodecCtx->width=WIDTH;
+	pCodecCtx->height=HEIGHT;
     if(avcodec_open(pCodecCtx, pCodec)<0)
 		{
 		printf("couldn't open codec\n");
@@ -114,13 +80,13 @@ int main (int argc, const char * argv[])
 
     // Read frames and save first five frames to disk
     i=0;
-    while(av_read_frame(pFormatCtx, &packet)>=0)
+	while( get_next_block() )
     {
-        // Is this a packet from the video stream?
-        if(packet.stream_index==videoStream)
+        // Is this a packet from the video stream?...of course!
         {
+			frameFinished = 0;
             // Decode video frame
-            avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, packet.data, packet.size);
+            avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, &ds.buffer[ds.last_pos], ds.cur_pos-ds.last_pos);
 
             // Did we get a video frame?
 			printf("ff=%i\n",frameFinished);
@@ -133,7 +99,6 @@ int main (int argc, const char * argv[])
 					int w = pCodecCtx->width;
 					int h = pCodecCtx->height;
 
-printf("pix_fmt=%i\n",pCodecCtx->pix_fmt);
 					img_convert_ctx = sws_getContext(w, h, pCodecCtx->pix_fmt, w, h, PIX_FMT_RGB24, SWS_BICUBIC,NULL, NULL, NULL);
 					if(img_convert_ctx == NULL) {
 						fprintf(stderr, "Cannot initialize the conversion context!\n");
@@ -147,8 +112,6 @@ printf("pix_fmt=%i\n",pCodecCtx->pix_fmt);
             }
         }
 
-        // Free the packet that was allocated by av_read_frame
-        av_free_packet(&packet);
     }
 
     // Free the RGB image
@@ -161,8 +124,7 @@ printf("pix_fmt=%i\n",pCodecCtx->pix_fmt);
     // Close the codec
     avcodec_close(pCodecCtx);
 
-    // Close the video file
-    av_close_input_file(pFormatCtx);
+	close_264();
 
     return 0;
 }
