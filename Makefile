@@ -1,11 +1,15 @@
-FLAGS += `pkg-config --cflags --libs x264`
-FLAGS += `pkg-config --cflags --libs libavutil`
-FLAGS += `pkg-config --cflags --libs libavformat`
-FLAGS += `pkg-config --cflags --libs libavcodec`
-FLAGS += `pkg-config --cflags --libs libswscale`
-FLAGS += `pkg-config --cflags --libs libv4l2`
-FLAGS += `pkg-config --cflags --libs opencv`
-FLAGS += -g
+COMPILE_FLAGS = -g
+
+CFLAGS += $(COMPILE_FLAGS)
+CPPFLAGS += $(COMPILE_FLAGS)
+
+LDFLAGS += `pkg-config --libs x264`
+LDFLAGS += `pkg-config --libs libavutil`
+LDFLAGS += `pkg-config --libs libavformat`
+LDFLAGS += `pkg-config --libs libavcodec`
+LDFLAGS += `pkg-config --libs libswscale`
+LDFLAGS += `pkg-config --libs libv4l2`
+LDFLAGS += `pkg-config --libs opencv`
 
 ALL_BUILDS = \
 	capture\
@@ -29,34 +33,34 @@ SOURCES=`ls *.cpp *.c`
 -include .depend
 
 capture: capture.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 x264_encode: x264_encode.o
-	gcc $? -o $@ $(FLAGS)
+	gcc $? -o $@ $(LDFLAGS)
 
 avcodec: avcodec_sample.0.5.0.o 
-	gcc $? -o $@ $(FLAGS)
+	gcc $? -o $@ $(LDFLAGS)
 
 avcodec_rsa: avcodec_rsa.o
-	gcc $? -o $@ $(FLAGS)
+	gcc $? -o $@ $(LDFLAGS)
 
 encoder: encoder.o
-	gcc $? -o $@ $(FLAGS)
+	gcc $? -o $@ $(LDFLAGS)
 
 v4l2_enumerate: v4l2_enumerate.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o data_source_file.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source_tcp_server: test_data_source_tcp_server.o packet_server.o data_source_stdio_info.o data_source_tcp_server.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source_udp: test_data_source_udp.o packet_server.o data_source_stdio_info.o data_source_udp.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
-	g++ $? -o $@ $(FLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 clean:
 	rm -f *.o $(ALL_BUILDS)
