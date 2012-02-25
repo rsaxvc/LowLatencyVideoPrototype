@@ -14,7 +14,8 @@ ALL_BUILDS = \
 	avcodec_rsa\
 	v4l2_enumerate\
 	test_data_source\
-	test_data_source_ocv
+	test_data_source_ocv\
+	encoder
 
 all: .depend $(ALL_BUILDS)
 
@@ -45,6 +46,9 @@ test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_so
 
 test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
 	g++ $? -o $@ $(FLAGS)
+
+encoder: encoder.o
+	g++ -g $? -o $@ $(FLAGS)
 
 clean:
 	rm -f *.o $(ALL_BUILDS)
