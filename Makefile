@@ -45,7 +45,7 @@ avcodec_rsa: avcodec_rsa.o
 	gcc $? -o $@ $(LDFLAGS)
 
 encoder: encoder.o
-	gcc $? -o $@ $(LDFLAGS)
+	g++ $? -o $@ $(LDFLAGS)
 
 v4l2_enumerate: v4l2_enumerate.o
 	g++ $? -o $@ $(LDFLAGS)
