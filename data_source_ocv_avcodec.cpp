@@ -1,3 +1,7 @@
+#ifndef UINT64_C
+    #define UINT64_C(c) c ## ULL
+#endif
+
 extern "C"
 	{
 	#include <libavcodec/avcodec.h>
@@ -80,7 +84,10 @@ void data_source_ocv_avcodec::write( const uint8_t * data, size_t bytes )
 {
 int             frameFinished=0;
 // Decode video frame
-avcodec_decode_video(pCodecCtx, pFrame, &frameFinished, data, bytes);
+AVPacket avpkt;
+avpkt.data=(uint8_t*)data;
+avpkt.size=bytes;
+avcodec_decode_video2(pCodecCtx, pFrame,&frameFinished, &avpkt );
 
 // Did we get a video frame?
 if(frameFinished)
