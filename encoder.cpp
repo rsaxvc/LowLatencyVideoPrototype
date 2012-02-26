@@ -1,5 +1,9 @@
 #include "v4l2device.hpp"
 
+#ifndef UINT64_C
+	#define UINT64_C(c) c ## ULL
+#endif
+
 extern "C" {
 #include <libswscale/swscale.h>
 #include <x264.h>
@@ -132,7 +136,11 @@ void GetLayout( const v4l2_pix_format& fmt, vector< int >& offsets, vector< int 
 
 int main( int argc, char** argv )
 {
-    VideoCapture dev( "/dev/video0" );
+	string device = "/dev/video0";
+	if( argc == 2 )
+		device = argv[1];	
+
+    VideoCapture dev( device );
 
     cerr << "IO Methods:" << endl;
     vector< VideoCapture::IO > ios = dev.SupportedIO();
