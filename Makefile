@@ -14,8 +14,6 @@ LDFLAGS += `pkg-config --libs opencv`
 ALL_BUILDS = \
 	capture\
 	x264_encode\
-	avcodec\
-	avcodec_rsa\
 	encoder\
 	v4l2_enumerate\
 	test_data_source\
@@ -36,12 +34,6 @@ capture: capture.o
 	g++ $? -o $@ $(LDFLAGS)
 
 x264_encode: x264_encode.o
-	gcc $? -o $@ $(LDFLAGS)
-
-avcodec: avcodec_sample.0.5.0.o 
-	gcc $? -o $@ $(LDFLAGS)
-
-avcodec_rsa: avcodec_rsa.o
 	gcc $? -o $@ $(LDFLAGS)
 
 encoder: encoder.o
