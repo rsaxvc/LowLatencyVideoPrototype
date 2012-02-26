@@ -22,7 +22,7 @@ ALL_BUILDS = \
 
 all: .depend $(ALL_BUILDS)
 
-SOURCES=`ls *.cpp *.c`
+SOURCES=`ls *.cpp`
 
 .depend:
 	fastdep $(SOURCES) > .depend
