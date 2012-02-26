@@ -1,6 +1,4 @@
-#ifndef UINT64_C
-#define UINT64_C(c) c ## ULL
-#endif
+#define __STDC_CONSTANT_MACROS
 
 extern "C"
 {
