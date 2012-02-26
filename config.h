@@ -1,5 +1,5 @@
-#define WIDTH 640
-#define HEIGHT 480
-#define FPS 60
+#define WIDTH 160
+#define HEIGHT 120
+#define FPS 30
 #define TCP_PORT_NUMBER 10000
 #define UDP_PORT_NUMBER 10000

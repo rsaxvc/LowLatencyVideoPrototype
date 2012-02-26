@@ -15,6 +15,8 @@ extern "C" {
 #include <sstream>
 #include <map>
 
+#include "config.h"
+
 using namespace std;
 
 
@@ -241,8 +243,8 @@ int main( int argc, char** argv )
     vector< uint8_t* > planes( offsets.size() );
     
     // Allocate conversion context 
-    unsigned int outputWidth = 160;
-    unsigned int outputHeight = 120;
+    unsigned int outputWidth = WIDTH;
+    unsigned int outputHeight = HEIGHT;
     SwsContext* swsCtx = sws_getContext
         ( 
         fmt.width, 
@@ -286,7 +288,7 @@ int main( int argc, char** argv )
     int f =  fps.denominator / fps.numerator;
     int C = maxrate / f;
 
-    x264_param_default_preset( &param, "veryfast", "zerolatency" );
+    x264_param_default_preset( &param, "superfast", "zerolatency" );
 
     param.i_width   = outputWidth;
     param.i_height  = outputHeight;
