@@ -1,0 +1,13 @@
+This is an example low-bandwidth, low-latency video transport. Currently the compression is provided by X264.
+
+Building:
+	run `make`
+
+Launching:
+	./encode | ./viewer_stdin
+
+Dependencies:
+	libv4l2
+	libavcodec
+	libx264
+	libswscale
