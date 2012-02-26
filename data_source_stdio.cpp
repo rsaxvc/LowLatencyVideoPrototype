@@ -8,5 +8,4 @@ for( i = 0; i < bytes; ++i )
 	{
 	fprintf(stdout,"%c",data[i]);
 	}
-fprintf(stdout,"\n");
 }
