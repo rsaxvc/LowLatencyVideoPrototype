@@ -1,6 +1,10 @@
 #ifndef DATA_SOURCE_OCV_AVCODEC_H
 #define DATA_SOURCE_OCV_AVCODEC_H
 
+#ifndef UINT64_C
+    #define UINT64_C(c) c ## ULL
+#endif
+
 #include <libavcodec/avcodec.h>
 
 #include <cstring>
