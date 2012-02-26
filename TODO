@@ -1,0 +1,2 @@
+make viewer autodetect width/height
+include all data-sources with encoder.cpp, and use command-line flags to pick which one
