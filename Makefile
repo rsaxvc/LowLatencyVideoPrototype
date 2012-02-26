@@ -12,7 +12,6 @@ LDFLAGS += `pkg-config --libs libv4l2`
 LDFLAGS += `pkg-config --libs opencv`
 
 ALL_BUILDS = \
-	capture\
 	x264_encode\
 	encoder\
 	v4l2_enumerate\
@@ -30,9 +29,6 @@ SOURCES=`ls *.cpp *.c`
 	fastdep $(SOURCES) > .depend
 
 -include .depend
-
-capture: capture.o
-	g++ $? -o $@ $(LDFLAGS)
 
 x264_encode: x264_encode.o
 	gcc $? -o $@ $(LDFLAGS)
