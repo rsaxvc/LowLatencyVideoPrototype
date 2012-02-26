@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include "data_source.h"
 
+//passes each write into avcodec, then displays output in an opencv window
 class data_source_ocv_avcodec: public data_source
 	{
 	public:

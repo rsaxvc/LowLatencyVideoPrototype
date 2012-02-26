@@ -6,6 +6,7 @@
 
 #include "data_source.h"
 
+//broadcast calls each registered callback with data/bytes
 class packet_server
 	{
 	public:

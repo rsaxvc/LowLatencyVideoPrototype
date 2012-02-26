@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "data_source.h"
 
+//creates a TCP server, blocks until connect, then forwards data
 class data_source_tcp_server: public data_source
 	{
 	public:

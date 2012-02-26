@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include "data_source.h"
 
+//sends a UDP packet per write (unless fragged)
 class data_source_udp: public data_source
 	{
 	public:

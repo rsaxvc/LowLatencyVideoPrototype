@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "data_source.h"
 
+//writes output to a file
 class data_source_file: public data_source
 	{
 	public:

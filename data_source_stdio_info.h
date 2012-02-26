@@ -6,6 +6,7 @@
 
 #include "data_source.h"
 
+//Prints out packet size and count
 class data_source_stdio_info: public data_source
 	{
 	public:
