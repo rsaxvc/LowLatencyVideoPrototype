@@ -19,7 +19,8 @@ ALL_BUILDS = \
 	test_data_source\
 	test_data_source_tcp_server\
 	test_data_source_udp\
-	test_data_source_ocv
+	test_data_source_ocv\
+	viewer_stdin
 
 all: .depend $(ALL_BUILDS)
 
@@ -40,6 +41,9 @@ encoder: encoder.o
 	g++ $? -o $@ $(LDFLAGS)
 
 v4l2_enumerate: v4l2_enumerate.o
+	g++ $? -o $@ $(LDFLAGS)
+
+viewer_stdin: viewer_stdin.o data_source_ocv_avcodec.o x264_destreamer.o packet_server.o data_source_stdio_info.o
 	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o data_source_file.o
