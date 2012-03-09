@@ -10,6 +10,7 @@ LDFLAGS += `pkg-config --libs libavcodec`
 LDFLAGS += `pkg-config --libs libswscale`
 LDFLAGS += `pkg-config --libs libv4l2`
 LDFLAGS += `pkg-config --libs opencv`
+LDFLAGS += -lrt
 
 ALL_BUILDS = \
 	encoder\

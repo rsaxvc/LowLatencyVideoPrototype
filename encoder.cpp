@@ -12,6 +12,9 @@ extern "C" {
 #include <iostream>
 #include <sstream>
 #include <map>
+#include <numeric>
+#include <deque>
+#include <algorithm>
 
 #include "config.h"
 
@@ -134,6 +137,48 @@ void GetLayout( const v4l2_pix_format& fmt, vector< int >& offsets, vector< int 
 }
 
 
+
+double now()
+{
+    timespec temp;
+    clock_gettime( CLOCK_MONOTONIC, &temp );
+
+    return (double)temp.tv_sec + ( (double)temp.tv_nsec / 1e9 );
+}
+
+
+template< typename Cont >
+double median( const Cont& arr )
+{
+    Cont v( arr );
+
+    size_t n = v.size() / 2;
+    nth_element( v.begin(), v.begin() + n, v.end() );
+    if( n % 2 == 0 )
+        return 0.5 * ( v[n] + v[n-1] );
+    else
+        return v[n];
+}
+
+
+template< typename Cont >
+double stdev( const Cont& v )
+{
+    double sum = accumulate( v.begin(), v.end(), 0.0 );
+    double mean = sum / v.size();
+
+    vector<double> diff( v.size() );
+    transform( v.begin(), v.end(), diff.begin(), bind2nd(minus<double>(), mean) );
+
+    double sq_sum = inner_product( diff.begin(), diff.end(), diff.begin(), 0.0 );
+    double stdev = sqrt( sq_sum / v.size() );
+
+    return stdev;
+}
+
+
+
+
 int main( int argc, char** argv )
 {
     string device = "/dev/video0";
@@ -251,7 +296,7 @@ int main( int argc, char** argv )
         outputWidth,
         outputHeight,
         PIX_FMT_YUV420P,
-        SWS_BILINEAR,
+        SWS_FAST_BILINEAR,
         NULL,
         NULL,
         NULL
@@ -315,11 +360,23 @@ int main( int argc, char** argv )
         exit( EXIT_FAILURE );
     }
 
+    typedef map< string, deque<double> > Acc;
+    Acc acc;
+
+    double prv = 0;
+
     dev.StartCapture();
     while( true )
     {
+        prv = now();
+
         const VideoCapture::Buffer& b = dev.LockFrame();
         uint8_t* ptr = reinterpret_cast< unsigned char* >( const_cast< char* >( b.start ) );
+
+        acc["1 - capture"].push_back( now() - prv );
+
+
+        prv = now();
 
         // apply plane offsets
         for( size_t i = 0; i < planes.size(); ++i )
@@ -336,7 +393,11 @@ int main( int argc, char** argv )
             pic_in.img.i_stride
             );
 
+        acc["2 - scale"].push_back( now() - prv );
+
         dev.UnlockFrame();
+
+        prv = now();
 
         // Encode frame
         x264_nal_t* nals;
@@ -352,8 +413,31 @@ int main( int argc, char** argv )
             uint8_t* end = nals[i].p_payload + nals[i].i_payload;
             buf.insert( buf.end(), beg, end );
         }
+
+        acc["3 - encode"].push_back( now() - prv );
+
         fwrite( (const char*)&buf[0], 1, buf.size(), stdout );
         fflush( stdout );
+
+        static double start = now();
+        if( now() - start > 5.0 )
+        {
+            // print times
+            for( Acc::iterator i = acc.begin(); i != acc.end(); ++i )
+            {
+                deque<double>& arr = i->second;
+                while( arr.size() > 300 )
+                    arr.pop_front();
+
+                cerr << i->first << ": ";
+                cerr << "\t" << "Median: " << ( median( arr ) * 1000.0 ) << "ms ";
+                cerr << "\t" << "Stdev: " << ( stdev( arr ) * 1000.0 ) << "ms";
+                cerr << endl;
+            }
+            cerr << endl;
+
+            start = now();
+        }
     }
 
     dev.StopCapture();
