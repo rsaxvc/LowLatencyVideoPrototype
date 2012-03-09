@@ -5,7 +5,10 @@
     #define UINT64_C(c) c ## ULL
 #endif
 
+extern "C"
+{
 #include <libavcodec/avcodec.h>
+}
 
 #include <cstring>
 #include <stddef.h>

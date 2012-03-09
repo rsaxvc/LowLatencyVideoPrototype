@@ -1,16 +1,14 @@
-COMPILE_FLAGS = -g
+# pkg-config packages list
+PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv
+PKG_CFLAGS := $(shell pkg-config --cflags $(PKGS))
+PKG_LDFLAGS := $(shell pkg-config --libs $(PKGS))
 
-CFLAGS += $(COMPILE_FLAGS)
-CPPFLAGS += $(COMPILE_FLAGS)
+ADD_CFLAGS := -g
+ADD_LDFLAGS := -lrt
 
-LDFLAGS += `pkg-config --libs x264`
-LDFLAGS += `pkg-config --libs libavutil`
-LDFLAGS += `pkg-config --libs libavformat`
-LDFLAGS += `pkg-config --libs libavcodec`
-LDFLAGS += `pkg-config --libs libswscale`
-LDFLAGS += `pkg-config --libs libv4l2`
-LDFLAGS += `pkg-config --libs opencv`
-LDFLAGS += -lrt
+CFLAGS  := $(PKG_CFLAGS) $(ADD_CFLAGS) $(CFLAGS)
+LDFLAGS := $(PKG_LDFLAGS) $(ADD_LDFLAGS) $(LDFLAGS)
+CXXFLAGS := $(CFLAGS)
 
 ALL_BUILDS = \
 	encoder\
@@ -30,8 +28,14 @@ SOURCES=`ls *.cpp`
 
 -include .depend
 
+%.o : %.c
+	gcc $(CFLAGS) -c $<
+
+%.o : %.cpp
+	g++ $(CFLAGS) -c $<
+
 encoder: encoder.o
-	g++ $? -o $@ $(LDFLAGS)
+	g++ $? $(CFLAGS) -o $@ $(LDFLAGS)
 
 v4l2_enumerate: v4l2_enumerate.o
 	g++ $? -o $@ $(LDFLAGS)

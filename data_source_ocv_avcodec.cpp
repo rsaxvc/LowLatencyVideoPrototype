@@ -31,11 +31,11 @@ data_source_ocv_avcodec::data_source_ocv_avcodec(const char * name)
     }
 
     // Open codec
-    pCodecCtx = avcodec_alloc_context();
+    pCodecCtx = avcodec_alloc_context3( pCodec );
     pCodecCtx->pix_fmt=PIX_FMT_YUV420P;
     pCodecCtx->width=WIDTH;
     pCodecCtx->height=HEIGHT;
-    if(avcodec_open(pCodecCtx, pCodec)<0)
+    if(avcodec_open2(pCodecCtx, pCodec,NULL)<0)
     {
         printf("couldn't open codec\n");
     }
