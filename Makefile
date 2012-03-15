@@ -1,5 +1,5 @@
 # pkg-config packages list
-PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv
+PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv sdl2
 PKG_CFLAGS := $(shell pkg-config --cflags $(PKGS))
 PKG_LDFLAGS := $(shell pkg-config --libs $(PKGS))
 
@@ -17,7 +17,8 @@ ALL_BUILDS = \
 	test_data_source_tcp_server\
 	test_data_source_udp\
 	test_data_source_ocv\
-	viewer_stdin
+	viewer_stdin\
+	viewer_sdl
 
 all: .depend $(ALL_BUILDS)
 
@@ -28,12 +29,6 @@ SOURCES=`ls *.cpp`
 
 -include .depend
 
-%.o : %.c
-	gcc $(CFLAGS) -c $<
-
-%.o : %.cpp
-	g++ $(CFLAGS) -c $<
-
 encoder: encoder.o
 	g++ $? $(CFLAGS) -o $@ $(LDFLAGS)
 
@@ -41,6 +36,9 @@ v4l2_enumerate: v4l2_enumerate.o
 	g++ $? -o $@ $(LDFLAGS)
 
 viewer_stdin: viewer_stdin.o data_source_ocv_avcodec.o x264_destreamer.o packet_server.o data_source_stdio_info.o
+	g++ $? -o $@ $(LDFLAGS)
+
+viewer_sdl: viewer_sdl.o x264_destreamer.o packet_server.o
 	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o data_source_file.o
