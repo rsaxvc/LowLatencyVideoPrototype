@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-//TODO: make this a virtual class, and implement file/io,linux API, possibly other classes
-
 class PWM_driver
 	{
 	public:
@@ -13,6 +11,10 @@ class PWM_driver
 		void set_level( int8_t level );
 
 	private:
+		int write_int( int fd, int8_t value );
+		int run_fd;
+		int freq_fd;
+		int duty_fd;
 		int8_t default_value;
 		char * path;
 	};

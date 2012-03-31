@@ -9,6 +9,8 @@
 #include "signal_control.h"
 #include "RCPacket.h"
 
+#define CONTROL_TIMEOUT_MS 250
+
 #define STEERING_DEVICE ""
 #define THROTTLE_DEVICE "/sys/class/pwm/ecap.0/"
 
@@ -80,7 +82,7 @@ int main(int argc, char **argv)
 		/* Wait a packet. UDP_Recv returns != 0 if a packet is coming */
 		DISABLE_SIGNALS();
 		if (
-			1 == SDLNet_CheckSockets(set, 1000) &&
+			1 == SDLNet_CheckSockets(set, CONTROL_TIMEOUT_MS ) &&
 			1 == SDLNet_UDP_Recv( udpsock, p ) &&
 			p->len == sizeof( remote_control_packet ) )
 		{

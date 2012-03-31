@@ -1,4 +1,4 @@
-COMPILE_FLAGS = -g -O0
+COMPILE_FLAGS = -g -O0 -Wall
 COMPILE_FLAGS += `sdl-config --cflags`
 
 CFLAGS += $(COMPILE_FLAGS)
