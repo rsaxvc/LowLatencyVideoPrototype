@@ -81,8 +81,33 @@ void server()
 }
 
 
-void client( const string& host )
+void client( const string& host, int stick = -1 )
 {
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )    
+        THROW( "SDL_Init(): " << SDL_GetError() );
+    
+    if( stick < 0 )
+    {
+        cout << "Number of joysticks: " << SDL_NumJoysticks() << endl;
+        for( size_t i = 0; i < SDL_NumJoysticks(); ++i )
+        {
+            string name = SDL_JoystickName( i );
+            name = ( name == "" ? "Unknown" : name );
+            cout << "Joystick " << i << ": " << name << endl;; 
+            
+            SDL_Joystick* stick = SDL_JoystickOpen( i );
+            if( NULL == stick )
+                THROW( "SDL_JoystickOpen(" << i << "): " << SDL_GetError() );
+
+            cout << "   axes: " << SDL_JoystickNumAxes( stick ) << endl;
+            cout << "  balls: " << SDL_JoystickNumBalls( stick ) << endl;
+            cout << "   hats: " << SDL_JoystickNumHats( stick ) << endl;
+            cout << "buttons: " << SDL_JoystickNumButtons( stick ) << endl;
+            
+            SDL_JoystickClose( stick );
+        }    
+    }
+    
     UDPsocket sd = SDLNet_UDP_Open( 0 );
     if( !sd )
         THROW( "SDLNet_UDP_Open: " << SDLNet_GetError() );
@@ -113,7 +138,6 @@ void client( const string& host )
 }
 
 
-
 int main( int argc, char** argv )
 {
 	if( SDLNet_Init() < 0 )
@@ -122,7 +146,9 @@ int main( int argc, char** argv )
     if( argc == 1 )
         server();
     else if( argc == 2 )
-        client( argv[1] );
+        client( argv[1], -1 );
+    else if( argc == 3 )
+        client( argv[1], atoi( argv[2] ) );
 
     SDLNet_Quit();
     return EXIT_SUCCESS;    

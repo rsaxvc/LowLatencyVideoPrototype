@@ -1,5 +1,5 @@
 # pkg-config packages list
-PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv sdl2
+PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv sdl2 SDL_net
 PKG_CFLAGS := $(shell pkg-config --cflags $(PKGS))
 PKG_LDFLAGS := $(shell pkg-config --libs $(PKGS))
 
@@ -18,7 +18,8 @@ ALL_BUILDS = \
 	test_data_source_udp\
 	test_data_source_ocv\
 	viewer_stdin\
-	viewer_sdl
+	viewer_sdl\
+	network_joystick\
 
 all: .depend $(ALL_BUILDS)
 
@@ -51,6 +52,9 @@ test_data_source_udp: test_data_source_udp.o packet_server.o data_source_stdio_i
 	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source_ocv: test_data_source_ocv.o packet_server.o data_source_stdio_info.o data_source_ocv_avcodec.o
+	g++ $? -o $@ $(LDFLAGS)
+
+network_joystick: network_joystick.o
 	g++ $? -o $@ $(LDFLAGS)
 
 clean:
