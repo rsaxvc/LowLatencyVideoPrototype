@@ -3,7 +3,7 @@ PKGS := x264 libavutil libavformat libavcodec libswscale libv4l2 opencv sdl2 SDL
 PKG_CFLAGS := $(shell pkg-config --cflags $(PKGS))
 PKG_LDFLAGS := $(shell pkg-config --libs $(PKGS))
 
-ADD_CFLAGS := -g
+ADD_CFLAGS := -g -D__STDC_CONSTANT_MACROS
 ADD_LDFLAGS := -lrt
 
 CFLAGS  := $(PKG_CFLAGS) $(ADD_CFLAGS) $(CFLAGS)
