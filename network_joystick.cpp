@@ -29,7 +29,7 @@ using namespace std;
 	}
 
 
-const unsigned short PORT = 5000;
+const unsigned short PORT = 2000;
 
 
 ostream& operator<<( ostream& out, const IPaddress& addr )
@@ -46,7 +46,7 @@ ostream& operator<<( ostream& out, const IPaddress& addr )
 struct InputState
 {
     char steering;
-    unsigned char throttle;
+    char throttle;
 };
 
 
@@ -260,8 +260,8 @@ void client
             SDL_JoystickGetAxis( joy, throttleAxis ), 
             numeric_limits< short >::min(), 
             numeric_limits< short >::max(),
-            numeric_limits< unsigned char >::min(),
-            numeric_limits< unsigned char >::max()
+            (char)0,
+            numeric_limits< char >::max()
             );
             
         cout << (int)state.steering << " " << (int)state.throttle << endl;
@@ -271,7 +271,7 @@ void client
         if( 0 == SDLNet_UDP_Send( sd, -1, &pkt ) )
             THROW( "SDLNet_UDP_Send: " << SDLNet_GetError() );
         
-        SDL_Delay(16);
+        SDL_Delay(25);
     }
     
     if( joy )
