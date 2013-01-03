@@ -326,8 +326,8 @@ int main( int argc, char** argv )
     // Equally, you can do constant bitrate instead of capped constant quality,
     // by replacing CRF with --bitrate B, where B is the maxrate above.
 
-    int packetsize = 1500; // bytes
-    int maxrate = 220; // kbps
+    int packetsize = 1000; // bytes
+    int maxrate = 110; // kbps
     int f =  fps.denominator / fps.numerator;
     int C = maxrate / f;
 
@@ -373,7 +373,7 @@ int main( int argc, char** argv )
         const VideoCapture::Buffer& b = dev.LockFrame();
         uint8_t* ptr = reinterpret_cast< unsigned char* >( const_cast< char* >( b.start ) );
 
-        acc["1 - capture"].push_back( now() - prv );
+        acc["1 - capture(ms):    "].push_back( ( now() - prv ) * 1000.0 );
 
 
         prv = now();
@@ -393,7 +393,7 @@ int main( int argc, char** argv )
             pic_in.img.i_stride
             );
 
-        acc["2 - scale"].push_back( now() - prv );
+        acc["2 - scale(ms):     "].push_back( ( now() - prv ) * 1000.0 );
 
         dev.UnlockFrame();
 
@@ -414,10 +414,12 @@ int main( int argc, char** argv )
             buf.insert( buf.end(), beg, end );
         }
 
-        acc["3 - encode"].push_back( now() - prv );
+        acc["3 - encode(ms):    "].push_back( ( now() - prv ) * 1000.0 );
 
         fwrite( (const char*)&buf[0], 1, buf.size(), stdout );
         fflush( stdout );
+
+        acc["4 - bytes/frame:   "].push_back( buf.size() );
 
         static double start = now();
         if( now() - start > 5.0 )
@@ -429,9 +431,9 @@ int main( int argc, char** argv )
                 while( arr.size() > 300 )
                     arr.pop_front();
 
-                cerr << i->first << ": ";
-                cerr << "\t" << "Median: " << ( median( arr ) * 1000.0 ) << "ms ";
-                cerr << "\t" << "Stdev: " << ( stdev( arr ) * 1000.0 ) << "ms";
+                cerr << i->first;
+                cerr << "\t" << "Median: " << ( median( arr ) );
+                cerr << "\t" << "Stdev: " << ( stdev( arr ) );
                 cerr << endl;
             }
             cerr << endl;
