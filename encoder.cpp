@@ -370,6 +370,11 @@ int main( int argc, char** argv )
     {
         prv = now();
 
+        //send out the NAL header
+        static const char nal_header[4] = {0x00,0x00,0x00,0x01};
+        fwrite( (const char*)nal_header, 1, sizeof( nal_header ), stdout );
+        fflush( stdout );
+
         const VideoCapture::Buffer& b = dev.LockFrame();
         uint8_t* ptr = reinterpret_cast< unsigned char* >( const_cast< char* >( b.start ) );
 
@@ -416,7 +421,8 @@ int main( int argc, char** argv )
 
         acc["3 - encode(ms):    "].push_back( ( now() - prv ) * 1000.0 );
 
-        fwrite( (const char*)&buf[0], 1, buf.size(), stdout );
+		//send everything except the first NAL header, which we already sent
+        fwrite( (const char*)&buf[4], 1, buf.size(), stdout );
         fflush( stdout );
 
         acc["4 - bytes/frame:   "].push_back( buf.size() );
