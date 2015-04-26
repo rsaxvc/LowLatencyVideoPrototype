@@ -7,6 +7,7 @@ extern "C" {
 #include <x264.h>
 }
 
+#include <cmath>
 #include <fstream>
 #include <vector>
 #include <iostream>
