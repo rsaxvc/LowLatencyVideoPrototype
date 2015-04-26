@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 
 #include "data_source_ocv_avcodec.h"
 #include "data_source_stdio_info.h"
