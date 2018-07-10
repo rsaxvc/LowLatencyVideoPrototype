@@ -326,8 +326,8 @@ int main( int argc, char** argv )
     // Equally, you can do constant bitrate instead of capped constant quality,
     // by replacing CRF with --bitrate B, where B is the maxrate above.
 
-    int packetsize = 1000; // bytes
-    int maxrate = 110; // kbps
+    int packetsize = 1200; // bytes
+    int maxrate = 400; // kbps
     int f =  fps.denominator / fps.numerator;
     int C = maxrate / f;
 
