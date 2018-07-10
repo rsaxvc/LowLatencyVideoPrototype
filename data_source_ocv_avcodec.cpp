@@ -83,6 +83,7 @@ void data_source_ocv_avcodec::write( const uint8_t * data, size_t bytes )
     int             frameFinished=0;
     // Decode video frame
     AVPacket avpkt;
+    memset( &avpkt, 0x00, sizeof avpkt );
     avpkt.data=(uint8_t*)data;
     avpkt.size=bytes;
     avcodec_decode_video2(pCodecCtx, pFrame,&frameFinished, &avpkt );
