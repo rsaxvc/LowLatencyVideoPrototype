@@ -1,2 +1,12 @@
 *.o
 .depend
+
+encoder
+test_data_source
+test_data_source_ocv
+test_data_source_tcp_server
+test_data_source_udp
+v4l2_enumerate
+viewer_sdl
+viewer_stdin
+
