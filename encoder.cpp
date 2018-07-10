@@ -1,9 +1,8 @@
-#define __STDC_CONSTANT_MACROS
-
 #include "v4l2device.hpp"
 
 extern "C" {
 #include <libswscale/swscale.h>
+#include <libavutil/pixfmt.h>
 #include <x264.h>
 }
 
@@ -235,14 +234,14 @@ int main( int argc, char** argv )
     cerr << endl;
 
     // v4l2 pixelformat -> libswscale colorspace
-    map< __u32, PixelFormat > FormatMap;
-    FormatMap[ V4L2_PIX_FMT_YUYV ]      =  PIX_FMT_YUYV422;
-    FormatMap[ V4L2_PIX_FMT_YUV420 ]    =  PIX_FMT_YUV420P;
-    FormatMap[ V4L2_PIX_FMT_RGB24 ]     =  PIX_FMT_RGB24;
-    FormatMap[ V4L2_PIX_FMT_BGR24 ]     =  PIX_FMT_BGR24;
+    map< __u32, AVPixelFormat > FormatMap;
+    FormatMap[ V4L2_PIX_FMT_YUYV ]      =  AV_PIX_FMT_YUYV422;
+    FormatMap[ V4L2_PIX_FMT_YUV420 ]    =  AV_PIX_FMT_YUV420P;
+    FormatMap[ V4L2_PIX_FMT_RGB24 ]     =  AV_PIX_FMT_RGB24;
+    FormatMap[ V4L2_PIX_FMT_BGR24 ]     =  AV_PIX_FMT_BGR24;
 
     bool formatFound = false;
-    map< __u32, PixelFormat >::iterator i;
+    map< __u32, AVPixelFormat >::iterator i;
     for( i = FormatMap.begin(); i != FormatMap.end(); ++i )
     {
         if( fmt.pixelformat == i->first )
@@ -296,7 +295,7 @@ int main( int argc, char** argv )
         FormatMap[ fmt.pixelformat ],
         outputWidth,
         outputHeight,
-        PIX_FMT_YUV420P,
+        AV_PIX_FMT_YUV420P,
         SWS_FAST_BILINEAR,
         NULL,
         NULL,

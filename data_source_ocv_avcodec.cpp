@@ -24,7 +24,7 @@ data_source_ocv_avcodec::data_source_ocv_avcodec(const char * name)
     avcodec_register_all();
 
     // Find the decoder for the video stream
-    pCodec=avcodec_find_decoder(CODEC_ID_H264);
+    pCodec=avcodec_find_decoder(AV_CODEC_ID_H264);
     if(pCodec==NULL)
     {
         printf("No codec\n");
@@ -32,7 +32,7 @@ data_source_ocv_avcodec::data_source_ocv_avcodec(const char * name)
 
     // Open codec
     pCodecCtx = avcodec_alloc_context3( pCodec );
-    pCodecCtx->pix_fmt=PIX_FMT_YUV420P;
+    pCodecCtx->pix_fmt=AV_PIX_FMT_YUV420P;
     pCodecCtx->width=WIDTH;
     pCodecCtx->height=HEIGHT;
     if(avcodec_open2(pCodecCtx, pCodec,NULL)<0)
@@ -45,22 +45,22 @@ data_source_ocv_avcodec::data_source_ocv_avcodec(const char * name)
         pCodecCtx->time_base.den=1000;
 
     // Allocate video frame
-    pFrame=avcodec_alloc_frame();
+    pFrame=av_frame_alloc();
 
     // Allocate an AVFrame structure
-    pFrameRGB=avcodec_alloc_frame();
+    pFrameRGB=av_frame_alloc();
     if(pFrameRGB==NULL)
     {
         printf("Frame alloc failed\n");
     }
 
     // Determine required buffer size and allocate buffer
-    numBytes=avpicture_get_size(PIX_FMT_RGB24, pCodecCtx->width,pCodecCtx->height);
+    numBytes=avpicture_get_size(AV_PIX_FMT_RGB24, pCodecCtx->width,pCodecCtx->height);
 
     buffer=malloc(numBytes);
 
     // Assign appropriate parts of buffer to image planes in pFrameRGB
-    avpicture_fill((AVPicture *)pFrameRGB, (uint8_t*)buffer, PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height);
+    avpicture_fill((AVPicture *)pFrameRGB, (uint8_t*)buffer, AV_PIX_FMT_RGB24,pCodecCtx->width, pCodecCtx->height);
 }
 
 data_source_ocv_avcodec::~data_source_ocv_avcodec()

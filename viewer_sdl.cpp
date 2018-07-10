@@ -176,7 +176,7 @@ int FrameThread( void* ptr )
     //unsigned int height = 0;
     //GetBufferInfo( buf, 10*1024, width, height );
 
-    AVCodec* codec = avcodec_find_decoder(CODEC_ID_H264);
+    AVCodec* codec = avcodec_find_decoder(AV_CODEC_ID_H264);
     if( codec == NULL )
         cout << "bad codec" << endl;
 
@@ -184,7 +184,7 @@ int FrameThread( void* ptr )
     if( codecCtx == NULL )
         cout << "bad codecCtx" << endl;
 
-    codecCtx->pix_fmt = PIX_FMT_YUV420P;
+    codecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
     codecCtx->width = 160;
     codecCtx->height = 120;
     if( avcodec_open2( codecCtx, codec, NULL ) < 0 )
@@ -193,7 +193,7 @@ int FrameThread( void* ptr )
     if( codecCtx->time_base.num > 1000 && codecCtx->time_base.den == 1 )
         codecCtx->time_base.den = 1000;
 
-    AVFrame* frame = avcodec_alloc_frame();
+    AVFrame* frame = av_frame_alloc();
     if( frame == NULL )
         cout << "bad frame" << endl;
 
