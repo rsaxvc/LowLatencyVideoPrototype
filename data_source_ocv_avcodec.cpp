@@ -100,7 +100,7 @@ void data_source_ocv_avcodec::write( const uint8_t * data, size_t bytes )
             int w = pCodecCtx->width;
             int h = pCodecCtx->height;
 
-            img_convert_ctx = sws_getContext(w, h, pCodecCtx->pix_fmt, w, h, PIX_FMT_BGR24, SWS_BICUBIC,NULL, NULL, NULL);
+            img_convert_ctx = sws_getContext(w, h, pCodecCtx->pix_fmt, w, h, AV_PIX_FMT_BGR24, SWS_FAST_BILINEAR ,NULL, NULL, NULL);
             if(img_convert_ctx == NULL)
             {
                 fprintf(stderr, "Cannot initialize the conversion context!\n");
@@ -112,7 +112,7 @@ void data_source_ocv_avcodec::write( const uint8_t * data, size_t bytes )
         // Blit
         output_image->imageData = (char*)pFrameRGB->data[0];
         cvShowImage(m_name,output_image);
-        cvWaitKey(10);
+        cvWaitKey(1);
         output_image->imageData = NULL;
         cvReleaseImageHeader( &output_image );
     }
