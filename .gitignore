@@ -2,6 +2,7 @@
 .depend
 
 encoder
+encoder_udp
 test_data_source
 test_data_source_ocv
 test_data_source_tcp_server

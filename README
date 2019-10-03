@@ -3,11 +3,17 @@ This is an example low-bandwidth, low-latency video transport. Currently the com
 Building:
 	run `make`
 
-Launching:
+Launching a simple loopback:
 	./encode | ./viewer_stdin
+
+Launching a UDP broadcaster
+    Sender: ./encode_udp
+    Player: netcat -kul 12345 | ./viewer_stdin 
 
 Dependencies:
 	libv4l2
 	libavcodec
 	libx264
 	libswscale
+	libcv
+	libhighgui
