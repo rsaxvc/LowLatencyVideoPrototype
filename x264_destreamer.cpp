@@ -18,9 +18,17 @@ previous_state = ( ( previous_state & 0x00FFFFFF ) << 8 ) | byte;
 
 if( previous_state == 0x00000001 )
 	{
-	if( sync )
+	if( sync && buffer.size() > 4 )
 		{
-		server.broadcast( &buffer[0], buffer.size() );
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		buffer.push_back(0);
+		server.broadcast( &buffer[0], buffer.size()-8 );
 		buffer.clear();
 		}
 	sync = true;
