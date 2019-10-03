@@ -18,6 +18,7 @@ extern "C"
 #include <libavformat/avio.h>
 }
 
+#include "config.h"
 #include "data_source.h"
 #include "x264_destreamer.h"
 
@@ -185,8 +186,8 @@ int FrameThread( void* ptr )
         cout << "bad codecCtx" << endl;
 
     codecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
-    codecCtx->width = 160;
-    codecCtx->height = 120;
+    codecCtx->width = WIDTH;
+    codecCtx->height = HEIGHT;
     if( avcodec_open2( codecCtx, codec, NULL ) < 0 )
         cout << "couldn't open codec" << endl;
 
