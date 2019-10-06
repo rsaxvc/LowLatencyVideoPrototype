@@ -10,4 +10,4 @@ test_data_source_udp
 v4l2_enumerate
 viewer_sdl
 viewer_stdin
-
+viewer_udp_ocv

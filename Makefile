@@ -20,6 +20,7 @@ ALL_BUILDS = \
 	test_data_source_ocv\
 	viewer_stdin\
 	viewer_sdl\
+    viewer_udp_ocv
 
 all: .depend $(ALL_BUILDS)
 
@@ -43,6 +44,9 @@ viewer_stdin: viewer_stdin.o data_source_ocv_avcodec.o x264_destreamer.o packet_
 	g++ $? -o $@ $(LDFLAGS)
 
 viewer_sdl: viewer_sdl.o x264_destreamer.o packet_server.o
+	g++ $? -o $@ $(LDFLAGS)
+
+viewer_udp_ocv: viewer_udp_ocv.o x264_destreamer.o packet_server.o data_source_ocv_avcodec.o data_source_stdio_info.o
 	g++ $? -o $@ $(LDFLAGS)
 
 test_data_source: test_data_source.o packet_server.o data_source_stdio.o data_source_stdio_info.o data_source_file.o
