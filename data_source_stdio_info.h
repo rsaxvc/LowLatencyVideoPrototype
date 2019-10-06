@@ -10,12 +10,10 @@
 class data_source_stdio_info: public data_source
 	{
 	public:
-	data_source_stdio_info();
-	~data_source_stdio_info();
 	void write( const uint8_t * data, size_t bytes );
 
 	private:
-	int num_packets;
+	int num_packets = 0;
 	};
 
 #endif
