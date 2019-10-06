@@ -288,7 +288,7 @@ int main( int argc, char **argv )
         renderer,
         SDL_PIXELFORMAT_IYUV,
         SDL_TEXTUREACCESS_STREAMING,
-        160, 120
+        WIDTH, HEIGHT
         );
     if( !tex )
         THROW( "Couldn't create texture: " << SDL_GetError() );
@@ -337,7 +337,7 @@ int main( int argc, char **argv )
                 vector< unsigned char > frame = fq.frames.front();
                 fq.frames.pop();
                 fq.Unlock();
-                SDL_UpdateTexture(tex, NULL, &frame[0], 160 * SDL_BYTESPERPIXEL(SDL_PIXELFORMAT_IYUV) );
+                SDL_UpdateTexture(tex, NULL, &frame[0], WIDTH * SDL_BYTESPERPIXEL(SDL_PIXELFORMAT_IYUV) );
             }
         }
 
@@ -345,8 +345,8 @@ int main( int argc, char **argv )
         SDL_RenderClear( renderer );
 
         SDL_Rect src;
-        src.w = 160;
-        src.h = 120;
+        src.w = WIDTH;
+        src.h = HEIGHT;
         SDL_Rect s = ScaleAspect(src, winRect );
 
         SDL_SetRenderDrawColor( renderer, 255, 0, 0, 0 );
