@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdio>
 
+#include "config.h"
 #include "data_source_ocv_avcodec.h"
 #include "data_source_stdio_info.h"
 #include "x264_destreamer.h"
@@ -27,17 +28,14 @@ int main(int numArgs, const char * argv[] )
 {
     int sock;                         /* Socket */
     struct sockaddr_in broadcastAddr; /* Broadcast Address */
-    unsigned short broadcastPort;     /* Port */
+    unsigned short broadcastPort = UDP_PORT_NUMBER;     /* Port */
     static uint8_t recvString[MAXRECVSTRING+1]; /* Buffer for received string */
     int recvStringLen;                /* Length of received string */
 
-    if (numArgs != 2)    /* Test for correct number of arguments */
-    {
-        fprintf(stderr,"Usage: %s <Broadcast Port>\n", argv[0]);
-        exit(1);
-    }
+    unsigned short port = UDP_PORT_NUMBER;
+    if( numArgs >= 2 )
+        broadcastPort = atoi( argv[1] );
 
-    broadcastPort = atoi(argv[1]);   /* First arg: broadcast port */
 
     /* Create a best-effort datagram socket using UDP */
     if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)

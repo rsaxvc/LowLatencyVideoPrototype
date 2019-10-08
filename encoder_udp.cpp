@@ -186,7 +186,7 @@ int main( int argc, char** argv )
 {
     string device = "/dev/video0";
     string ip = "192.168.0.255";
-    unsigned short port = 12345;
+    unsigned short port = UDP_PORT_NUMBER;
     if( argc >= 2 )
         device = argv[1];
     if( argc >= 3 )
