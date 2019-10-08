@@ -405,9 +405,6 @@ int main( int argc, char** argv )
     {
         prv = now();
 
-        //send out the NAL header
-        static const char nal_header[4] = {0x00,0x00,0x00,0x01};
-
         const VideoCapture::Buffer& b = dev.LockFrame();
         uint8_t* ptr = reinterpret_cast< unsigned char* >( const_cast< char* >( b.start ) );
 
@@ -451,10 +448,6 @@ int main( int argc, char** argv )
             uint8_t* end = nals[i].p_payload + nals[i].i_payload;
             buf.insert( buf.end(), beg, end );
         }
-        buf.push_back( nal_header[0] );
-        buf.push_back( nal_header[1] );
-        buf.push_back( nal_header[2] );
-        buf.push_back( nal_header[3] );
 
         acc["3 - encode(ms):    "].push_back( ( now() - prv ) * 1000.0 );
 
