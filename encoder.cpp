@@ -337,6 +337,7 @@ int main( int argc, char** argv )
     param.i_height  = outputHeight;
     param.i_fps_num = fps.denominator;
     param.i_fps_den = fps.numerator;
+    param.b_repeat_headers = 1;
 
     x264_param_parse( &param, "slice-max-size", TS(packetsize).c_str() );
     x264_param_parse( &param, "vbv-maxrate", TS(maxrate).c_str() );
