@@ -31,7 +31,7 @@ if (sockfd >= 0)
 	flag = 1;
 	if( setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,(char *) &flag,sizeof(int) )< 0 )
 		{
-		printf("Unable to set TCP_NODELAY\n");
+		printf("Unable to set SO_REUSEADDR\n");
 		}
 
 	memset((char *) &serv_addr, 0x00, sizeof(serv_addr));
