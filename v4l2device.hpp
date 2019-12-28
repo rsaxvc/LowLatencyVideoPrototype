@@ -41,16 +41,16 @@ public:
         mFd = v4l2_open( device.c_str(), O_RDWR | O_NONBLOCK, 0);
         if( mFd == - 1 )
             THROW( "can't open " << device << ": " << strerror(errno) );
-               
+
         // make sure this is a capture device
         v4l2_capability cap;
         xioctl( mFd, VIDIOC_QUERYCAP, &cap );
         if( !(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) )
             THROW("not a video capture device!");
-        
+
         mSupported = IOMethods();
         if( mSupported.empty() ) THROW("no supported IO methods!");
-        
+
         bool found_requested = false;
         for( size_t i = 0; i < mSupported.size(); ++i )
         {
@@ -60,7 +60,7 @@ public:
                 break;
             }
         }
-        
+
         // use requested IO if supported, otherwise "fastest"
         mIO = ( found_requested ? aIO : mSupported.back() );
 
@@ -89,7 +89,7 @@ public:
     {
         if( mCapturing ) THROW("already capturing!");
         mCapturing = true;
-        
+
         // grab current frame format
         v4l2_pix_format fmt = GetFormat();
 
@@ -102,7 +102,7 @@ public:
             fmt.sizeimage = min;
 
         const unsigned int bufCount = 4;
-        
+
         if( mIO == READ )
         {
             // allocate buffer
@@ -118,8 +118,8 @@ public:
             req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
             req.memory = ( mIO == MMAP ? V4L2_MEMORY_MMAP : V4L2_MEMORY_USERPTR );
             req.count = bufCount;
-            xioctl( mFd, VIDIOC_REQBUFS, &req );            
-            
+            xioctl( mFd, VIDIOC_REQBUFS, &req );
+
             if( mIO == USERPTR )
             {
                 // allocate buffers
@@ -129,7 +129,7 @@ public:
                     mBuffers[ i ].length = fmt.sizeimage;
                     mBuffers[ i ].start = new char[ fmt.sizeimage ];
                 }
-            }            
+            }
             else
             {
                 // mmap buffers
@@ -147,9 +147,9 @@ public:
                     mBuffers[i].start = (char*)v4l2_mmap(NULL, buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, mFd, buf.m.offset);
                     if( mBuffers[i].start == MAP_FAILED )
                         THROW("mmap() failed!");
-                }                
+                }
             }
-            
+
             // queue buffers
             for( size_t i = 0; i < mBuffers.size(); ++i )
             {
@@ -163,13 +163,13 @@ public:
                     buf.m.userptr   = (unsigned long)mBuffers[i].start;
                     buf.length      = mBuffers[i].length;
                 }
-                
+
                 xioctl( mFd, VIDIOC_QBUF, &buf );
-            }     
-            
+            }
+
             // start streaming
             v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-            xioctl( mFd, VIDIOC_STREAMON, &type );            
+            xioctl( mFd, VIDIOC_STREAMON, &type );
         }
     }
 
@@ -227,7 +227,7 @@ public:
             int r = select( mFd + 1, &fds, NULL, NULL, &tv);
             if( -1 == r && EINTR == errno )
             {
-                if( EINTR == errno ) 
+                if( EINTR == errno )
                     continue;
                 THROW( "select() error" );
             }
@@ -241,7 +241,7 @@ public:
 
         if( mIO == READ )
         {
-            if( -1 == v4l2_read( mFd, mBuffers[0].start, mBuffers[0].length) ) 
+            if( -1 == v4l2_read( mFd, mBuffers[0].start, mBuffers[0].length) )
             {
                 if( errno != EAGAIN && errno != EIO )
                     THROW( "read() error" );
@@ -255,7 +255,7 @@ public:
             memset( &mLockedBuffer, 0, sizeof(mLockedBuffer) );
             mLockedBuffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
             mLockedBuffer.memory = ( mIO == MMAP ? V4L2_MEMORY_MMAP : V4L2_MEMORY_USERPTR );
-            if( -1 == v4l2_ioctl( mFd, VIDIOC_DQBUF, &mLockedBuffer) ) 
+            if( -1 == v4l2_ioctl( mFd, VIDIOC_DQBUF, &mLockedBuffer) )
             {
                 if( errno != EAGAIN && errno != EIO )
                     THROW( "ioctl() error" );
@@ -283,12 +283,12 @@ public:
                 THROW( "buffer index out of range" );
 
             mLockedFrame.start = mBuffers[i].start;
-            mLockedFrame.length = mLockedBuffer.bytesused;            
+            mLockedFrame.length = mLockedBuffer.bytesused;
         }
 
         return mLockedFrame;
     }
-    
+
     void UnlockFrame()
     {
         if( !mIsLocked ) return;
@@ -337,7 +337,7 @@ public:
 
     v4l2_fract GetInterval()
     {
-        v4l2_streamparm param;      
+        v4l2_streamparm param;
         memset( &param, 0, sizeof(param) );
         param.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         xioctl( mFd, VIDIOC_G_PARM, &param );
@@ -358,18 +358,18 @@ public:
 
             try
             {
-                xioctl( mFd, VIDIOC_ENUM_FMT, &fmt ); 
+                xioctl( mFd, VIDIOC_ENUM_FMT, &fmt );
             }
             catch( std::exception& e )
             {
                 // hit the end of the enumeration list, exit
                 if( errno == EINVAL ) break;
                 else throw e;
-            }        
-            
+            }
+
             fmts.push_back( fmt );
         }
-        
+
         return fmts;
     }
 
@@ -393,15 +393,15 @@ public:
                 // hit the end of the enumeration list, exit
                 if( errno == EINVAL ) break;
                 else throw e;
-            }        
-            
+            }
+
             sizes.push_back( size );
-            
+
             // only discrete has multiple enumerations
             if( size.type != V4L2_FRMSIZE_TYPE_DISCRETE )
                 break;
         }
-        
+
         return sizes;
     }
 
@@ -427,16 +427,15 @@ public:
                 // hit the end of the enumeration list, exit
                 if( errno == EINVAL ) break;
                 else throw e;
-            }        
-            
+            }
+
             intervals.push_back( interval );
-            curIndex++; 
+            curIndex++;
         }
-        
+
         return intervals;
     }
 
-    
 private:
     std::vector< IO > IOMethods()
     {
@@ -466,7 +465,7 @@ private:
                 // blind ioctl, some drivers get pissy with count = 0
                 v4l2_ioctl( mFd, VIDIOC_REQBUFS, &req );
             }
-            
+
             // test mmap
             memset( &req, 0, sizeof(req) );
             req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -480,7 +479,7 @@ private:
                 v4l2_ioctl( mFd, VIDIOC_REQBUFS, &req );
             }
         }
-        
+
         return supported;
     }
 
@@ -496,10 +495,10 @@ private:
     static void xioctl( int fd, int request, void* arg )
     {
         int ret = 0;
-        do 
+        do
         {
             ret = v4l2_ioctl( fd, request, arg );
-        } 
+        }
         while( ret == -1 && ( (errno == EINTR) || (errno == EAGAIN) ) );
 
         if( ret == -1 )
