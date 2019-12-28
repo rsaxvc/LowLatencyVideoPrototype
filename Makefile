@@ -13,6 +13,7 @@ CXXFLAGS := $(CFLAGS)
 ALL_BUILDS = \
 	encoder\
 	encoder_udp\
+	encoder_h264\
 	v4l2_enumerate\
 	test_data_source\
 	test_data_source_tcp_server\

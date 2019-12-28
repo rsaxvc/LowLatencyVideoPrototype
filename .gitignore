@@ -2,6 +2,7 @@
 .depend
 
 encoder
+encoder_h264
 encoder_udp
 test_data_source
 test_data_source_ocv
